@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 	if(argc == 2)
 	{
 		printf("There is a batchfile named %s", argv[argc]);
-		FILE *fopen(char argv[argc], 'r') //Reads in batch file commands
+		//FILE *fopen(char argv[argc], 'r') //Reads in batch file commands
 	}
 	else
 	{
@@ -89,24 +89,17 @@ void  promptUser(bool isBatch)
 {
 	if (!isBatch)
 	{
-		//char* name;
-		char* hostname;
-		char* directory;
+		const int LEN = 128;
+		int size = LEN * sizeof(char);
+		char hostname[LEN];
+		char directory[LEN];
 
-		int x = gethostname(hostname, sizeof(hostname));
-		directory = getcwd(directory, sizeof(directory));
+		if(gethostname(hostname, size) != 0)
+		{
+			printf("\nError printing hostname\n");
+		}
 
-		//Keep looping until user input is == exit
-		//do{
-			printf("\n\n%s\n\n", directory);
-			printf("\n%s@%s:%s$ ", getenv("username"), hostname, directory);
-
-		//}while(exitProgram(tokens, tokensize) != 0);
-
-
-		
-		
-		// CWD: The buf argument should be a pointer to an array at least PATH_MAX bytes long
+		printf("\n%s@%s:%s$ ", getenv("USER"), hostname, getcwd(directory, size));
 	}
 }
 
