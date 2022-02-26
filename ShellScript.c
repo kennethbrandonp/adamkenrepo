@@ -87,7 +87,6 @@ int main(int argc, char **argv)
 
 void  promptUser(bool isBatch)
 {
-	printf("\ntest in promptUser\n";
 	if (!isBatch)
 	{
 		const int LEN = 128;
