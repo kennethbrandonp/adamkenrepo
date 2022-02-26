@@ -150,9 +150,63 @@ int parseInput(char *input, char *splitWords[])
 
 
 char* redirectCommand(char *special, char *line, bool *isRedirect, char *tokens[], char *outputTokens[]);
-char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTokens[],  bool *isExits);
 
 
+
+
+char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTokens[],  bool *isExits)
+{
+	char* cmdCopy = strdup(cmd); // make a copy of the command
+
+	cmdCopy = strcat(cmdCopy, "\n");
+	
+	char* outputFile = NULL;	// Create another char* for the output file name, and initialize it to an empty string
+	
+	char* carrotVar = strchr(cmdCopy, '>');   //  check if a redirect symbol ('>') is used, and store the return in an appropriate variable.
+
+	if (carrotVar != NULL) // If the return is not null, then call redirectCommand, and return  the output file name from this function
+	{
+		// outputfile = redirectCommand(char *special, char *line, bool *isRedirect, tokens, outputTokens);
+		// return outputFile;
+
+
+		// changeDirectories()
+
+		// printHelp()
+
+		// launchProcesses()
+	}
+	else
+	{
+		// tokenCount = parseInput(char *input, char *splitWords[])		// store number of returned tokens
+		if (tokenCount == 0)
+		{
+			return NULL;
+		}
+		// bool  exitProgram(char *tokens[], int numTokens)
+
+		
+		
+		
+		// if exit, return output file name
+
+		
+	}
+
+	
+	// If the return is null, call exitProgram and set the exit bool pointer so that main will know to exit the program.
+
+	// If the user has chosen to exit, you should immediately return the output file name.
+
+	// Otherwise, you should call changeDirectories, printHelp, and launchProcesses, and then return the output file name.
+
+
+
+	// return output file name
+}
+
+
+// int execvp(const char *file, char *const argv[]);
 
 char  getLetter(char *str, int index)
 {
