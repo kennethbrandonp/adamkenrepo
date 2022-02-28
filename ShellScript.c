@@ -51,16 +51,19 @@ void  changeDirectories(char *tokens[], int numTokens);
 int main(int argc, char **argv)
 {
 	// parse command-line args to determine if a batch file is presented
+	FILE *file;
 	if(argc == 2)
 	{
-		printf("There is a batchfile named %s", argv[argc]);
-		//FILE *fopen(char argv[argc], 'r') //Reads in batch file commands
+		printf("There is a batchfile named %s", argv[1]);
+		fopen(char argv[1], "r") //Reads in batch file commands
+		//stuff inbetween in necessary
+		fclose(argv[1]); //Closes file
 	}
 	else
 	{
 		printf("No batchfile");
 	}
-	
+
 	/*** INTERACTIVE MODE ***/
 	// initialize input, output, and file streams to NULL
 	
@@ -148,7 +151,46 @@ int parseInput(char *input, char *splitWords[])
 
 
 
-char* redirectCommand(char *special, char *line, bool *isRedirect, char *tokens[], char *outputTokens[]);
+char* redirectCommand(char *special, char *line, bool *isRedirect, char *tokens[], char *outputTokens[])
+{
+	FILE *file1, *file2;
+	char c;
+	//parse twice, once for input file name and twice for output
+	int x = parseInput(special, tokens);
+	int y = parseInput(line, outputTokens);
+
+	if(x != 1 || y >= 3)
+	{
+		*isRedirect = 0;
+		printError(); //no tokens or too many arguments 
+		return outputTokens[1];
+	}
+	else
+	{
+		*isRedirect = 1;
+		file1 = fopen(tokens[1], "r"); //Out input file
+			if(file1 == NULL){
+				printError();
+				fclose(file1);
+			}
+		file2 = fopen(outputTokens[1], "w"); //Our output file
+			if(file2 == NULL){
+				printError();
+				fclose(file2);
+			}
+
+		c = fgetc(file1);
+		while(c != EOF)  //Copy contents of input file into output file character by character till end of file (EOF)
+		{
+			fputc(c, file2);
+			c = fgetc(file1);
+		}
+		fclose(file1);
+		fclose(file2);
+
+	}
+	return "Successful redirect";
+}
 
 
 
