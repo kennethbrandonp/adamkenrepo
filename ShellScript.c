@@ -51,11 +51,20 @@ void  changeDirectories(char *tokens[], int numTokens);
 int main(int argc, char **argv)
 {
 	// parse command-line args to determine if a batch file is presented
-	FILE *file;
+	FILE *inFile = NULL;
+	FILE *outFile = NULL;
+	FILE *redirectFile = NULL;
+	
+	char* currentLine = NULL;
+	char* currentToken = NULL;
+
+	char inputString[128];
+	int  tokenCount = 0;
+
 	if(argc == 2)
 	{
 		printf("There is a batchfile named %s", argv[1]);
-		fopen(char argv[1], "r") //Reads in batch file commands
+		fopen(argv[1], "r"); //Reads in batch file commands
 		//stuff inbetween in necessary
 		fclose(argv[1]); //Closes file
 	}
@@ -65,20 +74,27 @@ int main(int argc, char **argv)
 	}
 
 	/*** INTERACTIVE MODE ***/
-	// initialize input, output, and file streams to NULL
-	
-	// declare/initalize vars
-	
 	// check batch/error status
 	
+	while(true)	// loop until exitProgram() is called
+	{
+		do
+		{
+			promptUser(false);
+			
+			scanf("%127s", inputString);
+			//outFile = executeCommand(inputString);
+
+			
+		}while(inFile != NULL);
+
+
+
+		inFile = NULL;
+	}
 	// display prompt
 	
 	// parse commands using strtok() (split string into tokens)
-	
-	promptUser(false);
-	
-	
-	
 	
 	/*** BATCH MODE ***/ // check argc in main
 
@@ -147,7 +163,7 @@ int parseInput(char *input, char *splitWords[])
       }
 
       return wordInd;
-}
+}	// returns number of parsed arguments
 
 
 
@@ -207,43 +223,22 @@ char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTo
 
 	if (carrotVar != NULL) // If the return is not null, then call redirectCommand, and return  the output file name from this function
 	{
-		// outputfile = redirectCommand(char *special, char *line, bool *isRedirect, tokens, outputTokens);
-		// return outputFile;
-
-
+		outputFile = redirectCommand(cmdCopy, cmdCopy, isRedirect, tokens, outputTokens);
+		return outputFile;
 		// changeDirectories()
-
 		// printHelp()
-
 		// launchProcesses()
 	}
 	else
 	{
-		// tokenCount = parseInput(char *input, char *splitWords[])		// store number of returned tokens
+		int tokenCount = parseInput(cmd, tokens); // store number of returned tokens
 		if (tokenCount == 0)
 		{
 			return NULL;
 		}
-		// bool  exitProgram(char *tokens[], int numTokens)
-
-		
-		
-		
-		// if exit, return output file name
-
-		
 	}
 
-	
-	// If the return is null, call exitProgram and set the exit bool pointer so that main will know to exit the program.
-
-	// If the user has chosen to exit, you should immediately return the output file name.
-
-	// Otherwise, you should call changeDirectories, printHelp, and launchProcesses, and then return the output file name.
-
-
-
-	// return output file name
+	return outputFile;
 }
 
 
@@ -289,5 +284,4 @@ void  changeDirectories(char *tokens[], int numTokens)
 	{
 		printError();
 	}
-
 }
