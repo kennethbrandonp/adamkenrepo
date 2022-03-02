@@ -270,7 +270,40 @@ bool  exitProgram(char *tokens[], int numTokens)
 
 void  launchProcesses(char *tokens[], int numTokens, bool isRedirect)
 {
+	int x;
+	int child;
+	for(int i = 1; i < numTokens; i++) //Create child process using fork()
+	{
+		child = fork();
+		if (child < 0)
+		{
+			printf( "Child Process: %d created", child);//Check if it was made
+		}
 
+		isRedirect = strcmp(tokens[0], "execvp"); //If our first provided command is exevp then we know it's a redirect
+		
+		if(isRedirect == 0)
+		{
+			x = execvp(tokens[1][0], tokens[1][1]); //Store the return from execvp
+			if(x == -1) //Unsuccessful return
+			{
+				printError();
+			}
+			else if(tokens[i] == "help") //If a command is help
+			{
+				printHelp(tokens, numTokens);
+			}
+			else if(tokens[i] == "cd") //If a command is change directories
+			{
+				changeDirectories(tokens, numTokens);
+			}
+			else if(tokens[i] == "exit") //If a command is to exit
+			{
+				exitProgram(tokens, numTokens);
+			}
+			wait(); //Wait for execvp to get done then go back to parent process.
+		}
+	}
 }
 
 void  changeDirectories(char *tokens[], int numTokens)
