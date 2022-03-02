@@ -58,8 +58,15 @@ int main(int argc, char **argv)
 	char* currentLine = NULL;
 	char* currentToken = NULL;
 
-	char inputString[128];
+	char inputString[128] = {""};
 	int  tokenCount = 0;
+
+	bool* isRedirect = 0;
+	bool* isExits = 0;
+
+	char outputTokens[1][64] = {{""}};
+	char inputTokens[1][64] = {{""}}; 	// just doing static allocation for now
+	
 
 	if(argc == 2)
 	{
@@ -81,16 +88,32 @@ int main(int argc, char **argv)
 		do
 		{
 			promptUser(false);
-			
 			scanf("%127s", inputString);
-			//outFile = executeCommand(inputString);
-
 			
-		}while(inFile != NULL);
+		}while(inputString[0] == "");
 
+		tokenCount = parseInput(inputString, inputTokens);
+		outFile = executeCommand(inputString, isRedirect, inputTokens, outputTokens, isExits);
 
+		// Execute command
+		if (strcmp(outFile, "cd\n") == 0)
+		{
+			printf("change directories\n");
+		}
+		else if (strcmp(outFile, "help\n") == 0)
+		{
+			printHelp(inputTokens, tokenCount);
+		}
+		else if (strcmp(outFile, "ls\n") == 0 || strcmp(outFile, "clear\n") == 0)
+		{
+			printf("execvp() stuff here");
+		}
+		else
+		{
+			printError();
+		}
 
-		inFile = NULL;
+		inputString[0] = "";
 	}
 	// display prompt
 	
@@ -217,13 +240,13 @@ char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTo
 
 	cmdCopy = strcat(cmdCopy, "\n");
 	
-	char* outputFile = NULL;	// Create another char* for the output file name, and initialize it to an empty string
+	char* outputFile = cmdCopy;	// Create another char* for the output file name, and initialize it to an empty string
 	
 	char* carrotVar = strchr(cmdCopy, '>');   //  check if a redirect symbol ('>') is used, and store the return in an appropriate variable.
 
 	if (carrotVar != NULL) // If the return is not null, then call redirectCommand, and return  the output file name from this function
 	{
-		outputFile = redirectCommand(cmdCopy, cmdCopy, isRedirect, tokens, outputTokens);
+		outputFile = redirectCommand('>', cmdCopy, isRedirect, tokens, outputTokens);
 		return outputFile;
 		// changeDirectories()
 		// printHelp()
@@ -301,7 +324,7 @@ void  launchProcesses(char *tokens[], int numTokens, bool isRedirect)
 			{
 				exitProgram(tokens, numTokens);
 			}
-			wait(); //Wait for execvp to get done then go back to parent process.
+			wait(NULL); //Wait for execvp to get done then go back to parent process.
 		}
 	}
 }
