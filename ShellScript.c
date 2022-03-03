@@ -61,11 +61,13 @@ int main(int argc, char **argv)
 	char inputString[128] = {""};
 	int  tokenCount = 0;
 
-	bool* isRedirect = 0;
-	bool* isExits = 0;
+	bool* isRedirect = false;
+	bool* isExits = false;
 
 	char outputTokens[1][64] = {{""}};
 	char inputTokens[1][64] = {{""}}; 	// just doing static allocation for now
+
+	pid_t processID = getpid();	// get process ID of this program
 	
 
 	if(argc == 2)
@@ -94,23 +96,12 @@ int main(int argc, char **argv)
 
 		tokenCount = parseInput(inputString, inputTokens);
 		outFile = executeCommand(inputString, isRedirect, inputTokens, outputTokens, isExits);
-
-		// Execute command
-		if (strcmp(outFile, "cd\n") == 0)
+		
+		if(isExits)
 		{
-			printf("change directories\n");
-		}
-		else if (strcmp(outFile, "help\n") == 0)
-		{
-			printHelp(inputTokens, tokenCount);
-		}
-		else if (strcmp(outFile, "ls\n") == 0 || strcmp(outFile, "clear\n") == 0)
-		{
-			printf("execvp() stuff here");
-		}
-		else
-		{
-			printError();
+			printf("\nTrying to exit\n");
+			//printf("\n %d \n", (int)processID);
+			//int x = kill(processID, 15);	// 15 is signal value for "termination signal"
 		}
 
 		inputString[0] = "";
@@ -257,7 +248,29 @@ char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTo
 		int tokenCount = parseInput(cmd, tokens); // store number of returned tokens
 		if (tokenCount == 0)
 		{
+			return "";
+		}
+		// Execute command
+		else if (strcmp(cmdCopy, "cd\n") == 0)
+		{
+			printf("change directories\n");
+		}
+		else if (strcmp(cmdCopy, "help\n") == 0)
+		{
+			printHelp(tokens, tokenCount);
+		}
+		else if (strcmp(cmdCopy, "exit\n") == 0)
+		{
+			*isExits = exitProgram(tokens, tokenCount);
 			return NULL;
+		}
+		else if (strcmp(cmdCopy, "ls\n") == 0 || strcmp(cmdCopy, "clear\n") == 0)
+		{
+			printf("execvp() stuff here");
+		}
+		else
+		{
+			printError();
 		}
 	}
 
@@ -283,11 +296,13 @@ bool  exitProgram(char *tokens[], int numTokens)
 	}
 	else if(x == 0)
 	{
-		return true;
+		//return true;
+		return 1;
 	}
 	else
 	{
-		return false;
+		//return false;
+		return 0;
 	}
 }
 
