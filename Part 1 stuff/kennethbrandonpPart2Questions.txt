@@ -1,0 +1,11 @@
+1. System calls are software interrupts that transfers control to kernel code. We implement this in our code by transferring control to the outter shell which then passes control to kernel mode.
+
+2.  Both do system calls, the difference is in the last two letters in the exec- family.
+    execve() replaces the current process with a new process, running the command in the first argument
+    execvp() grabs the program file given in the first argument and loads it into another file to over-write the program there.
+
+3. There's "End" which is sutiable and more appropriate way to close an application, the system should clean the temporary files then close the application which is something good to keep in mind.
+   Then there's "Stop" which pauses the application, it doesn't really close the application but it does stop the process from moving any further.
+   With Kill however, things are a little easier because the system forces the application to close without keeping much in mind about the process.
+
+4. It throws quite a bit of errors, if syntax is wrong, if I were to redo this program I would likely make case situations where if the syntax or destinations were wrong then it would attempt to correct or suggest an already existing argument, command or file.

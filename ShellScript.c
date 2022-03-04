@@ -1,6 +1,6 @@
 
-// Program name: <yourNetID>kennethbrandonp_ShellScript.c
-// Authors: and Kenneth Peterson
+// Program name: adamwhurdkennethbrandonp_ShellScript.c
+// Authors: Adam Whurd and Kenneth Peterson
 // Purpose: Create a shell using C
 
 
@@ -78,12 +78,27 @@ int main(int argc, char **argv)
 	pid_t processID = getpid();	// get process ID of this program
 	
 
+
 	if(argc == 2)
 	{
+		char tokens[1][32] = {{""}};
 		printf("There is a batchfile named %s", argv[1]);
-		fopen(argv[1], "r"); //Reads in batch file commands
-		//stuff inbetween in necessary
+		inFile = fopen(argv[1], "r"); //Reads in batch file commands
+		if(inFile) //If we can open the file
+		{
+			while(!feof(inFile)) //Reads file into a string
+			{
+				fscanf(inFile, "%s ", buffer);
+				printf("%s \n", buffer);
+			}
+
+			tokenCount = parseInput(buffer, tokens); //Parse our string into buffer
+			launchProcesses(*buffer, tokenCount, isRedirect); //Launch the process for each token			
+		}
+
 		fclose(argv[1]); //Closes file
+		char *batchEnd[1][6] = {"exit"}; //send a command to end program
+		bool isExit = exitProgram(*batchEnd, 2);
 	}
 	else
 	{

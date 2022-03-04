@@ -1,0 +1,231 @@
+processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 6
+model name      : QEMU Virtual CPU version 2.5+
+stepping        : 3
+microcode       : 0x1
+cpu MHz         : 2199.998
+cache size      : 16384 KB
+physical id     : 0
+siblings        : 1
+core id         : 0
+cpu cores       : 1
+apicid          : 0
+initial apicid  : 0
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 13
+wp              : yes
+flags           : fpu de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pse36 clflush mmx fxsr sse sse2 syscall nx >bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit
+bogomips        : 4399.99
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 40 bits physical, 48 bits virtual
+power management:
+processor       : 1
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 6
+model name      : QEMU Virtual CPU version 2.5+
+stepping        : 3
+microcode       : 0x1
+cpu MHz         : 2199.998
+cache size      : 16384 KB
+physical id     : 1
+siblings        : 1
+core id         : 0
+cpu cores       : 1
+apicid          : 1
+initial apicid  : 1
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 13
+wp              : yes
+flags           : fpu de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pse36 clflush mmx fxsr sse sse2 syscall nx>bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit
+bogomips        : 4399.99
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 40 bits physical, 48 bits virtual
+power management:
+processor       : 2
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 6
+model name      : QEMU Virtual CPU version 2.5+
+stepping        : 3
+microcode       : 0x1
+cpu MHz         : 2199.998
+cache size      : 16384 KB
+physical id     : 2
+siblings        : 1
+core id         : 0
+cpu cores       : 1
+apicid          : 2
+initial apicid  : 2
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 13
+wp              : yes
+flags           : fpu de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pse36 clflush mmx fxsr sse sse2 syscall nx>bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit
+bogomips        : 4399.99
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 40 bits physical, 48 bits virtual
+power management:
+processor       : 3
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 6
+model name      : QEMU Virtual CPU version 2.5+
+stepping        : 3
+microcode       : 0x1
+cpu MHz         : 2199.998
+cache size      : 16384 KB
+physical id     : 3
+siblings        : 1
+core id         : 0
+cpu cores       : 1
+apicid          : 3
+initial apicid  : 3
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 13
+wp              : yes
+flags           : fpu de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pse36 clflush mmx fxsr sse sse2 syscall nx>bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit
+bogomips        : 4399.99
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 40 bits physical, 48 bits virtual
+power management:
+processor       : 4
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 6
+model name      : QEMU Virtual CPU version 2.5+
+stepping        : 3
+microcode       : 0x1
+cpu MHz         : 2199.998
+cache size      : 16384 KB
+physical id     : 4
+siblings        : 1
+core id         : 0
+cpu cores       : 1
+apicid          : 4
+initial apicid  : 4
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 13
+wp              : yes
+flags           : fpu de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pse36 clflush mmx fxsr sse sse2 syscall nx>bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit
+bogomips        : 4399.99
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 40 bits physical, 48 bits virtual
+power management:
+processor       : 5
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 6
+model name      : QEMU Virtual CPU version 2.5+
+stepping        : 3
+microcode       : 0x1
+cpu MHz         : 2199.998
+cache size      : 16384 KB
+physical id     : 5
+siblings        : 1
+core id         : 0
+cpu cores       : 1
+apicid          : 5
+initial apicid  : 5
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 13
+wp              : yes
+flags           : fpu de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pse36 clflush mmx fxsr sse sse2 syscall nx>bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit
+bogomips        : 4399.99
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 40 bits physical, 48 bits virtual
+power management:
+processor       : 6
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 6
+model name      : QEMU Virtual CPU version 2.5+
+stepping        : 3
+microcode       : 0x1
+cpu MHz         : 2199.998
+cache size      : 16384 KB
+physical id     : 6
+siblings        : 1
+core id         : 0
+cpu cores       : 1
+apicid          : 6
+initial apicid  : 6
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 13
+wp              : yes
+flags           : fpu de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pse36 clflush mmx fxsr sse sse2 syscall nx>bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit
+bogomips        : 4399.99
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 40 bits physical, 48 bits virtual
+power management:
+processor       : 7
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 6
+model name      : QEMU Virtual CPU version 2.5+
+stepping        : 3
+microcode       : 0x1
+cpu MHz         : 2199.998
+cache size      : 16384 KB
+physical id     : 7
+siblings        : 1
+core id         : 0
+cpu cores       : 1
+apicid          : 7
+initial apicid  : 7
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 13
+wp              : yes
+flags           : fpu de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pse36 clflush mmx fxsr sse sse2 syscall nx>bugs            : cpu_meltdown spectre_v1 spectre_v2 spec_store_bypass l1tf mds swapgs itlb_multihit
+bogomips        : 4399.99
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 40 bits physical, 48 bits virtual
+power management:
+Linux version 5.4.0-100-generic (buildd@lcy02-amd64-002) (gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)) #113-Ubunt>43940.38 349791.45
+43940.38 349791.49
+   7       0 loop0 71 0 415 10 0 0 0 0 0 52 0 0 0 0 0
+   7       1 loop1 5030 0 10327 1582 0 0 0 0 0 544 0 0 0 0 0
+   7       2 loop2 19765 0 41620 4979 0 0 0 0 0 1880 0 0 0 0 0
+   7       3 loop3 260 0 1212 31 0 0 0 0 0 112 0 0 0 0 0
+   7       4 loop4 260 0 1206 31 0 0 0 0 0 136 0 0 0 0 0
+   7       5 loop5 4 0 8 0 0 0 0 0 0 8 0 0 0 0 0
+   7       6 loop6 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   7       7 loop7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+  11       0 sr0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+   2       0 fd0 7 0 56 417 0 0 0 0 0 440 404 0 0 0 0
+ 252       0 vda 62701 35046 3444530 22282 653379 134321 14407624 208494 0 168584 30148 0 0 0 0
+ 252       1 vda1 62561 35046 3439964 22259 635467 134321 14407624 164302 0 153600 5140 0 0 0 0
+ 253       0 dm-0 98281 0 3428230 39220 785217 0 14497632 188764 0 168516 227984 0 0 0 0
+ 253       1 dm-1 236 0 8812 72 0 0 0 0 0 88 72 0 0 0 0
+cpu  83403 891 69639 34943027 8719 0 3927 11944 0 0
+cpu0 9206 3 7042 4372949 1181 0 337 679 0 0
+cpu1 9389 121 8046 4369829 1476 0 239 550 0 0
+cpu2 8404 241 6929 4374482 1002 0 173 535 0 0
+cpu3 12153 70 8446 4367003 1072 0 308 3408 0 0
+cpu4 7983 339 6419 4375145 1188 0 126 572 0 0
+cpu5 9311 3 7312 4373553 740 0 118 490 0 0
+cpu6 10995 63 9529 4369277 1274 0 97 537 0 0
+cpu7 15959 47 15914 4340786 784 0 2526 5169 0 0
+intr 13988680 32 9 0 0 1292 0 11 0 1 0 0 0 15 0 0 43788 0 0 0 0 0 0 0 0 0 329031 0 2726356 2374205 0 0 0 0 0 0 0 0 0 0>ctxt 15775944
+btime 1645546928
+processes 90565
+procs_running 1
+procs_blocked 0
+softirq 13271611 1 3296623 20 5050993 377927 0 139172 1995898 38 2410939
