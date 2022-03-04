@@ -54,6 +54,11 @@ int main(int argc, char **argv)
 	FILE *inFile = NULL;
 	FILE *outFile = NULL;
 	FILE *redirectFile = NULL;
+	const int bufferLength = 256;
+	char buffer[bufferLength];
+
+
+
 	
 	char* currentLine = NULL;
 	char* currentToken = NULL;
@@ -61,11 +66,14 @@ int main(int argc, char **argv)
 	char inputString[128] = {""};
 	int  tokenCount = 0;
 
-	bool* isRedirect = false;
-	bool* isExits = false;
+	bool *isRedirect = calloc(1, sizeof(bool));
+	bool *isExits = calloc(1, sizeof(bool));
 
-	char outputTokens[1][64] = {{""}};
-	char inputTokens[1][64] = {{""}}; 	// just doing static allocation for now
+	*isRedirect = false;
+	*isExits = false;
+
+	//char outputTokens[8][32];
+	//char inputTokens[8][32]; 	// just doing static allocation for now
 
 	pid_t processID = getpid();	// get process ID of this program
 	
@@ -87,24 +95,28 @@ int main(int argc, char **argv)
 	
 	while(true)	// loop until exitProgram() is called
 	{
+		char tokens[1][32] = {{""}};
+		char outputTokens[1][32] = {{""}};
+		promptUser(false);
+		fgets(buffer, bufferLength, stdin);
+		/*
 		do
 		{
 			promptUser(false);
 			scanf("%127s", inputString);
-			
+
 		}while(inputString[0] == "");
+		*/
 
-		tokenCount = parseInput(inputString, inputTokens);
-		outFile = executeCommand(inputString, isRedirect, inputTokens, outputTokens, isExits);
-		
-		if(isExits)
+		//tokenCount = parseInput(buffer, inputTokens);	// inputTokens now holds tokenized buffer
+		outFile = executeCommand(buffer, isRedirect, tokens, outputTokens, isExits);
+
+		if(*isExits)
 		{
-			printf("\nTrying to exit\n");
+			//printf("\nTrying to exit\n");
 			//printf("\n %d \n", (int)processID);
-			//int x = kill(processID, 15);	// 15 is signal value for "termination signal"
+			int x = kill(processID, 15);	// 15 is signal value for "termination signal"
 		}
-
-		inputString[0] = "";
 	}
 	// display prompt
 	
@@ -113,6 +125,9 @@ int main(int argc, char **argv)
 	/*** BATCH MODE ***/ // check argc in main
 
 	// print commands in batch file
+
+	free(isRedirect);
+	free(isExits);
 
 	return 0;
 }
@@ -143,7 +158,7 @@ void  printError()
 
 void  printHelp(char *tokens[], int numTokens)
 {
-	int x = strcmp(tokens[0], "help");
+	int x = strcmp(tokens[0], "help\n");
 	if(numTokens >= 2)
 	{
 		printError();
@@ -227,44 +242,41 @@ char* redirectCommand(char *special, char *line, bool *isRedirect, char *tokens[
 
 char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTokens[],  bool *isExits)
 {
-	char* cmdCopy = strdup(cmd); // make a copy of the command
+	//char* cmdCopy = strdup(cmd); // make a copy of the command
 
-	cmdCopy = strcat(cmdCopy, "\n");
-	
-	char* outputFile = cmdCopy;	// Create another char* for the output file name, and initialize it to an empty string
-	
+	//cmdCopy = strcat(cmdCopy, "\n");
+	char* cmdCopy = cmd;
+
+	char* outputFile = "";	// Create another char* for the output file name, and initialize it to an empty string
+
 	char* carrotVar = strchr(cmdCopy, '>');   //  check if a redirect symbol ('>') is used, and store the return in an appropriate variable.
 
 	if (carrotVar != NULL) // If the return is not null, then call redirectCommand, and return  the output file name from this function
 	{
 		outputFile = redirectCommand('>', cmdCopy, isRedirect, tokens, outputTokens);
 		return outputFile;
-		// changeDirectories()
-		// printHelp()
-		// launchProcesses()
 	}
 	else
 	{
 		int tokenCount = parseInput(cmd, tokens); // store number of returned tokens
 		if (tokenCount == 0)
 		{
-			return "";
+			return outputFile;
 		}
 		// Execute command
-		else if (strcmp(cmdCopy, "cd\n") == 0)
+		else if (strcmp(tokens[0], "cd") == 0)
 		{
-			printf("change directories\n");
+			changeDirectories(tokens, tokenCount);
 		}
-		else if (strcmp(cmdCopy, "help\n") == 0)
+		else if (strcmp(tokens[0], "help\n") == 0)
 		{
 			printHelp(tokens, tokenCount);
 		}
-		else if (strcmp(cmdCopy, "exit\n") == 0)
+		else if (strcmp(tokens[0], "exit\n") == 0)
 		{
 			*isExits = exitProgram(tokens, tokenCount);
-			return NULL;
 		}
-		else if (strcmp(cmdCopy, "ls\n") == 0 || strcmp(cmdCopy, "clear\n") == 0)
+		else if (strcmp(tokens[0], "ls\n") == 0 || strcmp(tokens[0], "clear\n") == 0)
 		{
 			printf("execvp() stuff here");
 		}
@@ -289,20 +301,18 @@ char  getLetter(char *str, int index)
 
 bool  exitProgram(char *tokens[], int numTokens)
 {
-	int x = strcmp(tokens[0], "exit");
-	if(numTokens >= 2)
+	int x = strcmp(tokens[0], "exit\n");
+	if(numTokens > 2)
 	{
 		printError();
 	}
 	else if(x == 0)
 	{
-		//return true;
-		return 1;
+		return true;
 	}
 	else
 	{
-		//return false;
-		return 0;
+		return false;
 	}
 }
 
