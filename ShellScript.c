@@ -1,8 +1,7 @@
 
 // Program name: adamwhurdkennethbrandonp_ShellScript.c
-// Authors: Adam Whurd and Kenneth Peterson
+// Authors: Adam Hurd and Kenneth Peterson
 // Purpose: Create a shell using C
-
 
 
 #include <stdio.h>
@@ -20,47 +19,32 @@
 /*
 The program will execute a shell and loop until the user chooses to exit. 
 
-The program should have two possible modes: interactive and batch. 
+The program has two possible modes: interactive and batch. 
 
-The default should be interactive (the user inputs a command, and the shell executes the command), 
-but if the user provides a batch file name on the command line, 
-then the program should execute in batch mode. 
-
-Batch Mode simply reads the commands from a file, 
-rather than manually inputting them in the shell (unlike interactive mode).
-
-
-Additionally, the program should implement its own versions of exit, cd, and help
-
-
+The default is be interactive: the user inputs a command, and the shell executes the command 
+If a batch file name is provided on the command line, then the program will execute in batch mode. 
 */
 
 
-void trimNewline(char* string, int stringLength);
+void  trimNewline(char* string, int stringLength);
 void  promptUser(bool isBatch);
 void  printError();
 void  printHelp(char *tokens[], int numTokens);
 int   parseInput(char *input, char *splitWords[]);
-char* redirectCommand(char *special, char *line, bool *isRedirect, char *tokens[], char *outputTokens[]);
+char* redirectCommand(char *special, char *cmd, bool *isRedirect, char *tokens[], char *outputTokens[]);
 char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTokens[],  bool *isExits);
-char  getLetter(char *str, int index);
 bool  exitProgram(char *tokens[], int numTokens);
 void  launchProcesses(char *tokens[], int numTokens, bool isRedirect);
 void  changeDirectories(char *tokens[], int numTokens);
 
 int main(int argc, char **argv)
 {
-	// parse command-line args to determine if a batch file is presented
 	FILE *inFile = NULL;
 	FILE *outFile = NULL;
 	FILE *redirectFile = NULL;
 	const int bufferLength = 256;
 	char buffer[bufferLength];
 
-	//char* currentLine = NULL;
-	//char* currentToken = NULL;
-
-	//char inputString[128] = {""};
 	int  tokenCount = 0;
 
 	bool *isRedirect = calloc(1, sizeof(bool));
@@ -68,9 +52,6 @@ int main(int argc, char **argv)
 
 	*isRedirect = false;
 	*isExits = false;
-
-	//char outputTokens[8][32];
-	//char inputTokens[8][32]; 	// just doing static allocation for now
 
 	pid_t processID = getpid();	// get process ID of this program
 
@@ -116,7 +97,7 @@ int main(int argc, char **argv)
 		outFile = executeCommand(buffer, isRedirect, tokens, outputTokens, isExits);
 
 		if(*isExits)
-		{
+		{	// End program
 			int x = kill(processID, 15);	// 15 is signal value for "termination signal"
 		}
 		*isRedirect = false;	//re-initalize if used
@@ -129,7 +110,7 @@ int main(int argc, char **argv)
 }
 
 void trimNewline(char* string, int stringLength)
-{
+{	// Overwrite the newline with a null teriminator
 	for (int i = 0; i < stringLength; ++i)
 	{
 		if(string[i] == '\n')
@@ -141,7 +122,7 @@ void trimNewline(char* string, int stringLength)
 }
 
 void  promptUser(bool isBatch)
-{
+{	// display username, hostname, and current working directory
 	if (!isBatch)
 	{
 		const int LEN = 128;
@@ -183,10 +164,6 @@ void  printHelp(char *tokens[], int numTokens)
 		printf("That's how we get ls -la to work here!\n\n");
 
 	}
-	else
-	{
-		//do nothing
-	}
 }
 
 int parseInput(char *input, char *splitWords[])
@@ -203,45 +180,49 @@ int parseInput(char *input, char *splitWords[])
 
 
 
-char* redirectCommand(char *special, char *line, bool *isRedirect, char *tokens[], char *outputTokens[])
-{
-	FILE *file1, *file2;
+char* redirectCommand(char *special, char *cmd, bool *isRedirect, char *tokens[], char *outputTokens[])
+{	// Change file streams and copy contents of inFile into OutFile
+	FILE *inFile, *outFile;
 	char c;
-	//parse twice, once for input file name and twice for output
-	int x = parseInput(special, tokens);
-	int y = parseInput(line, outputTokens);
+	
+	int len = strlen(cmd);
+	trimNewline(cmd, len);
 
-	if(x != 1 || y >= 3)
+	//parse twice, once for input file name and twice for output
+	int y = parseInput(special, outputTokens);
+	int x = parseInput(cmd, tokens);
+
+	if ( y >= 3 || x < 1)
 	{
-		*isRedirect = 0;
+		*isRedirect = false;
 		printError(); //no tokens or too many arguments 
 		return outputTokens[1];
 	}
 	else
 	{
-		*isRedirect = 1;
-		file1 = fopen(tokens[1], "r"); //Out input file
-			if(file1 == NULL){
+		*isRedirect = true;
+		inFile = fopen(tokens[0], "r"); //Our input file
+			if(inFile == NULL){
 				printError();
-				fclose(file1);
+				fclose(inFile);
 			}
-		file2 = fopen(outputTokens[1], "w"); //Our output file
-			if(file2 == NULL){
+		outFile = fopen(outputTokens[1], "w"); //Our output file
+			if(outFile == NULL){
 				printError();
-				fclose(file2);
+				fclose(outFile);
 			}
 
-		c = fgetc(file1);
+		c = fgetc(inFile);
 		while(c != EOF)  //Copy contents of input file into output file character by character till end of file (EOF)
 		{
-			fputc(c, file2);
-			c = fgetc(file1);
+			fputc(c, outFile);
+			c = fgetc(inFile);
 		}
-		fclose(file1);
-		fclose(file2);
+		fclose(inFile);
+		fclose(outFile);
 
 	}
-	return "Successful redirect";
+	return outFile;
 }
 
 
@@ -250,8 +231,6 @@ char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTo
 	char* cmdCopy = strdup(cmd); // make a copy of the command
 
 	cmdCopy = strcat(cmdCopy, "\n"); // append newline so sys calls are recognized
-	//char* cmdCopy = cmd;
-
 	char* outputFile = "";	// Create another char* for the output file name, and initialize it to an empty string
 
 	char* carrotVar = strchr(cmdCopy, '>');   //  check if a redirect symbol ('>') is used, and store the return in an appropriate variable.
@@ -296,15 +275,6 @@ char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTo
 
 	return outputFile;
 }
-
-
-// int execvp(const char *file, char *const argv[]);
-
-char  getLetter(char *str, int index)
-{
-	return 'b';
-}
-
 
 
 bool  exitProgram(char *tokens[], int numTokens)
@@ -370,6 +340,7 @@ void  launchProcesses(char *tokens[], int numTokens, bool isRedirect)
 	{
 		printf("Child Process: %d created\n", child);
 	}
+
 	x = execvp(tokens[0], "");
 	if(x == -1)
 	{
