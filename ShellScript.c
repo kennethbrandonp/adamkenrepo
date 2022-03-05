@@ -36,7 +36,7 @@ Additionally, the program should implement its own versions of exit, cd, and hel
 */
 
 
-
+void trimNewline(char* string, int stringLength);
 void  promptUser(bool isBatch);
 void  printError();
 void  printHelp(char *tokens[], int numTokens);
@@ -57,13 +57,10 @@ int main(int argc, char **argv)
 	const int bufferLength = 256;
 	char buffer[bufferLength];
 
+	//char* currentLine = NULL;
+	//char* currentToken = NULL;
 
-
-	
-	char* currentLine = NULL;
-	char* currentToken = NULL;
-
-	char inputString[128] = {""};
+	//char inputString[128] = {""};
 	int  tokenCount = 0;
 
 	bool *isRedirect = calloc(1, sizeof(bool));
@@ -76,9 +73,9 @@ int main(int argc, char **argv)
 	//char inputTokens[8][32]; 	// just doing static allocation for now
 
 	pid_t processID = getpid();	// get process ID of this program
-	
 
 
+	/*** BATCH MODE ***/
 	if(argc == 2)
 	{
 		char tokens[1][32] = {{""}};
@@ -107,39 +104,23 @@ int main(int argc, char **argv)
 
 	/*** INTERACTIVE MODE ***/
 	// check batch/error status
-	
+
 	while(true)	// loop until exitProgram() is called
 	{
 		char tokens[1][32] = {{""}};
 		char outputTokens[1][32] = {{""}};
 		promptUser(false);
 		fgets(buffer, bufferLength, stdin);
-		/*
-		do
-		{
-			promptUser(false);
-			scanf("%127s", inputString);
 
-		}while(inputString[0] == "");
-		*/
-
-		//tokenCount = parseInput(buffer, inputTokens);	// inputTokens now holds tokenized buffer
+		trimNewline(buffer, bufferLength);
 		outFile = executeCommand(buffer, isRedirect, tokens, outputTokens, isExits);
 
 		if(*isExits)
 		{
-			//printf("\nTrying to exit\n");
-			//printf("\n %d \n", (int)processID);
 			int x = kill(processID, 15);	// 15 is signal value for "termination signal"
 		}
+		*isRedirect = false;	//re-initalize if used
 	}
-	// display prompt
-	
-	// parse commands using strtok() (split string into tokens)
-	
-	/*** BATCH MODE ***/ // check argc in main
-
-	// print commands in batch file
 
 	free(isRedirect);
 	free(isExits);
@@ -147,6 +128,17 @@ int main(int argc, char **argv)
 	return 0;
 }
 
+void trimNewline(char* string, int stringLength)
+{
+	for (int i = 0; i < stringLength; ++i)
+	{
+		if(string[i] == '\n')
+		{
+			string[i] = '\0';
+			return;
+		}
+	}
+}
 
 void  promptUser(bool isBatch)
 {
@@ -168,7 +160,7 @@ void  promptUser(bool isBatch)
 
 void  printError()
 {
-	printf("Shell Program Error Encountered\n");
+	printf("Shell Program Error Encountered");
 }
 
 void  printHelp(char *tokens[], int numTokens)
@@ -253,14 +245,12 @@ char* redirectCommand(char *special, char *line, bool *isRedirect, char *tokens[
 }
 
 
-
-
 char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTokens[],  bool *isExits)
 {
-	//char* cmdCopy = strdup(cmd); // make a copy of the command
+	char* cmdCopy = strdup(cmd); // make a copy of the command
 
-	//cmdCopy = strcat(cmdCopy, "\n");
-	char* cmdCopy = cmd;
+	cmdCopy = strcat(cmdCopy, "\n"); // append newline so sys calls are recognized
+	//char* cmdCopy = cmd;
 
 	char* outputFile = "";	// Create another char* for the output file name, and initialize it to an empty string
 
@@ -268,12 +258,14 @@ char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTo
 
 	if (carrotVar != NULL) // If the return is not null, then call redirectCommand, and return  the output file name from this function
 	{
-		outputFile = redirectCommand('>', cmdCopy, isRedirect, tokens, outputTokens);
+		*carrotVar = '>';
+		*isRedirect = true;
+		outputFile = redirectCommand(carrotVar, cmdCopy, isRedirect, tokens, outputTokens);
 		return outputFile;
 	}
 	else
 	{
-		int tokenCount = parseInput(cmd, tokens); // store number of returned tokens
+		int tokenCount = parseInput(cmdCopy, tokens); // store number of returned tokens
 		if (tokenCount == 0)
 		{
 			return outputFile;
@@ -293,7 +285,8 @@ char* executeCommand(char *cmd, bool *isRedirect, char* tokens[], char* outputTo
 		}
 		else if (strcmp(tokens[0], "ls\n") == 0 || strcmp(tokens[0], "clear\n") == 0)
 		{
-			printf("execvp() stuff here");
+			//printf("execvp() stuff here");
+			launchProcesses(tokens, tokenCount, *isRedirect);
 		}
 		else
 		{
@@ -338,20 +331,22 @@ void  launchProcesses(char *tokens[], int numTokens, bool isRedirect)
 	for(int i = 1; i < numTokens; i++) //Create child process using fork()
 	{
 		child = fork();
-		if (child < 0)
+		if (child >= 0)
 		{
-			printf( "Child Process: %d created", child);//Check if it was made
+			printf( "Child Process: %d created\n", child);//Check if it was made
 		}
 
 		isRedirect = strcmp(tokens[0], "execvp"); //If our first provided command is exevp then we know it's a redirect
-		
-		if(isRedirect == 0)
+
+		//if(isRedirect == 0)
 		{
-			x = execvp(tokens[1][0], tokens[1][1]); //Store the return from execvp
+			x = execvp(tokens[0], tokens[1]); //Store the return from execvp
 			if(x == -1) //Unsuccessful return
 			{
 				printError();
 			}
+
+			/*
 			else if(tokens[i] == "help") //If a command is help
 			{
 				printHelp(tokens, numTokens);
@@ -364,12 +359,27 @@ void  launchProcesses(char *tokens[], int numTokens, bool isRedirect)
 			{
 				exitProgram(tokens, numTokens);
 			}
+			*/	// all of this is handled in executeCommand 
+
 			wait(NULL); //Wait for execvp to get done then go back to parent process.
 		}
 	}
+	/*
+	child = fork();
+	if (child >= 0)
+	{
+		printf("Child Process: %d created\n", child);
+	}
+	x = execvp(tokens[0], "");
+	if(x == -1)
+	{
+		printError();
+	}
+	wait(NULL);
+	*/
 }
 
-void  changeDirectories(char *tokens[], int numTokens)
+void changeDirectories(char *tokens[], int numTokens)
 {
 	int x = strcmp(tokens[0], "cd");
 	if(x == 0 && numTokens == 2)
